@@ -1,96 +1,269 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script defer src="/_vercel/insights/script.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@exampledev/new.css@1.1.2/new.min.css"
-    />
-    <title>Vercel HTML Starter</title>
-    <meta
-      name="description"
-      content="High-performance HTML based website template."
-    />
-  </head>
-  <body>
-    <h1>Vercel HTML Starter</h1>
-    <p>
-      This template is a simple, but powerful single
-      <code>index.html</code> file deployed to
-      <a href="https://vercel.com">Vercel</a>. When your site is deployed, all
-      static assets (like HTML, JavaScript, CSS, images, and more) are deployed
-      globally to every
-      <a href="https://vercel.com/docs/concepts/edge-network/overview"
-        >Vercel Edge Network</a
-      >
-      region.
-    </p>
-    <h2>Simple, privacy-friendly analytics</h2>
-    <p>
-      Want to understand your visitor traffic? Vercel Analytics gives you
-      first-party, privacy-friendly traffic analytics for your HTML site. This
-      template is already configured using the following script:
-    </p>
-    <pre><code>&lt;script defer src="/_vercel/insights/script.js"&gt;&lt;/script&gt;</code></pre>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/analytics">Vercel Analytics</a>.
-    </p>
-    <h2>Integrated with git</h2>
-    <p>
-      Deploying updates to your site is as simple as
-      <code>git push</code> thanks to Vercel's advanced
-      <a href="https://vercel.com/docs/concepts/git">Git Integration</a>.
-      Support for GitHub, GitLab, Bitbucket is zero-configuration, and with the
-      flexible Vercel CLI and API, you can integrate with any tool possible.
-    </p>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/docs/concepts/git">Git Integration</a>.
-    </p>
-    <h2>Fast <code>gzip</code> compression</h2>
-    <p>
-      To help ensure the smallest possible file sizes for your static assets,
-      the Vercel Edge Network compresses files by default using
-      <code>gzip</code>. You can also optionally use
-      <code>brotli</code> compressesion if you prefer.
-    </p>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/docs/concepts/edge-network/compression"
-        >compression</a
-      >.
-    </p>
-    <h2>Advanced routing configuration</h2>
-    <p>
-      Vercel gives you a variety of ways to configure the routing of your
-      website. For example, adding redirects, rewrites, or headers to your page.
-      While you can use <code>vercel.json</code> to define these through JSON,
-      you can also express your routing configuration as code using
-      <a href="https://vercel.com/docs/concepts/functions/edge-middleware"
-        >Vercel Edge Middleware</a
-      >.
-    </p>
-    <p>
-      Middleware runs before the
-      <a href="https://vercel.com/docs/concepts/edge-network/caching"
-        >Vercel Edge Network Cache</a
-      >, so you can configure routing exactly as your application needs. For
-      example, this template uses <code>middleware.js</code> defined in the root
-      of the repository to add additional security headers to the site:
-    </p>
-    <pre><code>referrer-policy: origin-when-cross-origin
-strict-transport-security: max-age=31536000; includeSubDomains; preload
-x-content-type-options: nosniff
-x-dns-prefetch-control: on
-x-frame-options: DENY</code></pre>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/docs/concepts/functions/edge-middleware"
-        >Vercel Edge Middleware</a
-      >.
-    </p>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basketball Performance Tracker</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+        nav {
+            display: flex;
+            background-color: #ddd;
+            justify-content: center;
+            border-bottom: 2px solid #ccc;
+        }
+        nav button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            background: #ddd;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        nav button.active {
+            background: #007bff;
+            color: white;
+        }
+        .tab-content {
+            display: none;
+            padding: 20px;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        canvas {
+            max-width: 100%;
+            height: auto;
+            margin: 20px 0;
+        }
+        button {
+            padding: 10px 15px;
+            margin: 10px 0;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .form-group {
+            margin-bottom: 10px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            padding: 4px; /* Reduced padding for smaller height */
+            width: 50%;  /* Adjust width to make it smaller */
+            font-size: 14px; /* Slightly smaller text */
+            box-sizing: border-box; /* Ensures padding doesn't affect width */
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Basketball Performance Tracker</h1>
+    </header>
+    <nav>
+        <button class="tab-button active" data-tab="scoring-tab">Scoring Input</button>
+        <button class="tab-button" data-tab="summary-tab">Summary</button>
+        <button class="tab-button" data-tab="charts-tab">Charts</button>
+    </nav>
+
+    <div id="scoring-tab" class="tab-content active">
+        <h2>Enter Your Scores</h2>
+        <div class="form-group">
+            <label for="freetrow">Free Throw:</label>
+            <input type="number" id="freetrow" placeholder="Score">
+        </div>
+        <div class="form-group">
+            <label for="leftElbow">Left Elbow:</label>
+            <input type="number" id="leftElbow" placeholder="Score">
+        </div>
+        <div class="form-group">
+            <label for="rightElbow">Right Elbow:</label>
+            <input type="number" id="rightElbow" placeholder="Score">
+        </div>
+        <div class="form-group">
+            <label for="leftBasket">Left Basket:</label>
+            <input type="number" id="leftBasket" placeholder="Score">
+        </div>
+        <div class="form-group">
+            <label for="rightBasket">Right Basket:</label>
+            <input type="number" id="rightBasket" placeholder="Score">
+        </div>
+        <div class="form-group">
+            <label for="totalAttemptsInput">Total Attempts for All Positions:</label>
+            <input type="number" id="totalAttemptsInput" placeholder="Enter total attempts">
+        </div>
+        
+        <button id="saveScores">Save Scores</button>
+        <button id="resetButton">Reset All Data</button>
+    </div>
+    <div id="summary-tab" class="tab-content">
+        <h2>Summary</h2>
+        <p>Total Attempts: <span id="totalAttempts">0</span></p>
+        <p>Total Scores: <span id="totalScores">0</span></p>
+        <p>Scoring Percentage: <span id="totalPercentage">0%</span></p>
+    </div>
+
+    <div id="charts-tab" class="tab-content">
+        <h2>Charts</h2>
+        <canvas id="scoreChart" width="1400" height="700"></canvas>
+        <canvas id="percentChart" width="1400" height="700"></canvas>
+    </div>
+    
+    <script>
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', () => {
+                document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+                button.classList.add('active');
+                document.getElementById(button.dataset.tab).classList.add('active');
+            });
+        });
+    
+        let dailyScores = JSON.parse(localStorage.getItem('dailyScores')) || [];
+        let dailyAttempts = JSON.parse(localStorage.getItem('dailyAttempts')) || [];
+        let labels = JSON.parse(localStorage.getItem('labels')) || [];
+        let scoreChart, percentChart;
+    
+        document.getElementById('saveScores').addEventListener('click', () => {
+            const scores = [
+                parseInt(document.getElementById('freetrow').value) || 0,
+                parseInt(document.getElementById('leftElbow').value) || 0,
+                parseInt(document.getElementById('rightElbow').value) || 0,
+                parseInt(document.getElementById('leftBasket').value) || 0,
+                parseInt(document.getElementById('rightBasket').value) || 0
+            ];
+            const totalAttempts = parseInt(document.getElementById('totalAttemptsInput').value) || 0;
+    
+            if (totalAttempts <= 0) {
+                alert('Please enter a valid number of attempts.');
+                return;
+            }
+    
+            const today = new Date().toLocaleDateString();
+            const totalScore = scores.reduce((a, b) => a + b, 0);
+    
+            const index = labels.indexOf(today);
+            if (index === -1) {
+                labels.push(today);
+                dailyScores.push(totalScore);
+                dailyAttempts.push(totalAttempts);
+            } else {
+                dailyScores[index] += totalScore;
+                dailyAttempts[index] += totalAttempts;
+            }
+    
+            localStorage.setItem('dailyScores', JSON.stringify(dailyScores));
+            localStorage.setItem('dailyAttempts', JSON.stringify(dailyAttempts));
+            localStorage.setItem('labels', JSON.stringify(labels));
+    
+            updateSummary();
+            updateCharts();
+            alert('Scores saved!');
+        });
+    
+        document.getElementById('resetButton').addEventListener('click', () => {
+            if (confirm('Are you sure you want to reset all data?')) {
+                localStorage.clear();
+                dailyScores = [];
+                dailyAttempts = [];
+                labels = [];
+                updateSummary();
+                updateCharts();
+            }
+        });
+    
+        function updateSummary() {
+            const totalScores = dailyScores.reduce((a, b) => a + b, 0);
+            const totalAttempts = dailyAttempts.reduce((a, b) => a + b, 0);
+            const totalPercentage = totalAttempts > 0 ? ((totalScores / totalAttempts) * 100).toFixed(2) : 0;
+    
+            document.getElementById('totalAttempts').innerText = totalAttempts;
+            document.getElementById('totalScores').innerText = totalScores;
+            document.getElementById('totalPercentage').innerText = `${totalPercentage}%`;
+        }
+    
+        function updateCharts() {
+    const ctxScore = document.getElementById('scoreChart').getContext('2d');
+    const ctxPercent = document.getElementById('percentChart').getContext('2d');
+
+    // Destroy existing charts to avoid duplication
+    if (scoreChart) scoreChart.destroy();
+    if (percentChart) percentChart.destroy();
+
+    // Create the score chart
+    scoreChart = new Chart(ctxScore, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Total Daily Scores',
+                data: dailyScores,
+                borderColor: 'blue',
+                backgroundColor: 'rgba(0, 0, 255, 0.2)',
+                fill: true,
+                tension: 0.3,
+            }],
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true,
+                },
+            },
+        },
+    });
+
+    // Create the percentage chart
+    percentChart = new Chart(ctxPercent, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Scoring Percentage',
+                data: dailyAttempts.map((a, i) => a > 0 ? (dailyScores[i] / a) * 100 : 0),
+                borderColor: 'green',
+                backgroundColor: 'rgba(0, 255, 0, 0.2)',
+                fill: true,
+                tension: 0.3,
+            }],
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true,
+                },
+            },
+        },
+    });
+}
+
+        
+    
+        updateSummary();
+        updateCharts();
+    </script>
+    
+
+</body>
 </html>
