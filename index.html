@@ -107,6 +107,12 @@
       background-color: #007bff;
       color: #fff;
     }
+    /* Chart container styles */
+    .chart-container {
+      position: relative;
+      height: 300px; /* Adjust the height as needed */
+      margin-bottom: 20px;
+    }
     /* Responsive styles */
     @media (max-width: 768px) {
       .form-group input[type="number"] {
@@ -172,8 +178,12 @@
     <!-- Charts Tab -->
     <div id="charts-tab" class="tab-content">
       <h2>Charts</h2>
-      <canvas id="scoreChart"></canvas>
-      <canvas id="percentChart"></canvas>
+      <div class="chart-container">
+        <canvas id="scoreChart"></canvas>
+      </div>
+      <div class="chart-container">
+        <canvas id="percentChart"></canvas>
+      </div>
     </div>
 
     <!-- History Tab -->
