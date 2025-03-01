@@ -1,269 +1,396 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Basketball Performance Tracker</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            background-color: #007bff;
-            color: white;
-            text-align: center;
-            padding: 10px 0;
-        }
-        nav {
-            display: flex;
-            background-color: #ddd;
-            justify-content: center;
-            border-bottom: 2px solid #ccc;
-        }
-        nav button {
-            flex: 1;
-            padding: 15px;
-            border: none;
-            background: #ddd;
-            cursor: pointer;
-            font-size: 18px;
-        }
-        nav button.active {
-            background: #007bff;
-            color: white;
-        }
-        .tab-content {
-            display: none;
-            padding: 20px;
-        }
-        .tab-content.active {
-            display: block;
-        }
-        canvas {
-            max-width: 100%;
-            height: auto;
-            margin: 20px 0;
-        }
-        button {
-            padding: 10px 15px;
-            margin: 10px 0;
-            border: none;
-            background-color: #007bff;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .form-group {
-            margin-bottom: 10px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-        }
-        .form-group input {
-            padding: 4px; /* Reduced padding for smaller height */
-            width: 50%;  /* Adjust width to make it smaller */
-            font-size: 14px; /* Slightly smaller text */
-            box-sizing: border-box; /* Ensures padding doesn't affect width */
-        }
-
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Basketball Performance Tracker</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* Base styles */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+    }
+    header {
+      background-color: #007bff;
+      color: #fff;
+      text-align: center;
+      padding: 15px;
+    }
+    nav {
+      display: flex;
+      background-color: #eee;
+      justify-content: space-around;
+      border-bottom: 2px solid #ccc;
+    }
+    nav button {
+      flex: 1;
+      padding: 15px;
+      border: none;
+      background: #eee;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s;
+    }
+    nav button.active,
+    nav button:hover {
+      background: #007bff;
+      color: #fff;
+    }
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 20px;
+    }
+    .tab-content {
+      display: none;
+      padding: 20px;
+      background-color: #fff;
+      margin-top: 10px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .tab-content.active {
+      display: block;
+    }
+    h2 {
+      margin-top: 0;
+    }
+    /* Form styles */
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    .form-group input[type="number"] {
+      width: 60%;
+      padding: 8px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    button {
+      padding: 10px 15px;
+      margin: 10px 5px 10px 0;
+      border: none;
+      background-color: #007bff;
+      color: #fff;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 15px;
+    }
+    table,
+    th,
+    td {
+      border: 1px solid #ddd;
+    }
+    th,
+    td {
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background-color: #007bff;
+      color: #fff;
+    }
+    /* Responsive styles */
+    @media (max-width: 768px) {
+      .form-group input[type="number"] {
+        width: 100%;
+      }
+      nav button {
+        font-size: 14px;
+        padding: 10px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <h1>Basketball Performance Tracker</h1>
-    </header>
-    <nav>
-        <button class="tab-button active" data-tab="scoring-tab">Scoring Input</button>
-        <button class="tab-button" data-tab="summary-tab">Summary</button>
-        <button class="tab-button" data-tab="charts-tab">Charts</button>
-    </nav>
-
+  <header>
+    <h1>Basketball Performance Tracker</h1>
+  </header>
+  <nav>
+    <button class="tab-button active" data-tab="scoring-tab">Scoring Input</button>
+    <button class="tab-button" data-tab="summary-tab">Summary</button>
+    <button class="tab-button" data-tab="charts-tab">Charts</button>
+    <button class="tab-button" data-tab="history-tab">History</button>
+  </nav>
+  <div class="container">
+    <!-- Scoring Input Tab -->
     <div id="scoring-tab" class="tab-content active">
-        <h2>Enter Your Scores</h2>
-        <div class="form-group">
-            <label for="freetrow">Free Throw:</label>
-            <input type="number" id="freetrow" placeholder="Score">
-        </div>
-        <div class="form-group">
-            <label for="leftElbow">Left Elbow:</label>
-            <input type="number" id="leftElbow" placeholder="Score">
-        </div>
-        <div class="form-group">
-            <label for="rightElbow">Right Elbow:</label>
-            <input type="number" id="rightElbow" placeholder="Score">
-        </div>
-        <div class="form-group">
-            <label for="leftBasket">Left Basket:</label>
-            <input type="number" id="leftBasket" placeholder="Score">
-        </div>
-        <div class="form-group">
-            <label for="rightBasket">Right Basket:</label>
-            <input type="number" id="rightBasket" placeholder="Score">
-        </div>
-        <div class="form-group">
-            <label for="totalAttemptsInput">Total Attempts for All Positions:</label>
-            <input type="number" id="totalAttemptsInput" placeholder="Enter total attempts">
-        </div>
-        
-        <button id="saveScores">Save Scores</button>
-        <button id="resetButton">Reset All Data</button>
+      <h2>Enter Your Scores</h2>
+      <div class="form-group">
+        <label for="freetrow">Free Throw:</label>
+        <input type="number" id="freetrow" placeholder="Score" />
+      </div>
+      <div class="form-group">
+        <label for="leftElbow">Left Elbow:</label>
+        <input type="number" id="leftElbow" placeholder="Score" />
+      </div>
+      <div class="form-group">
+        <label for="rightElbow">Right Elbow:</label>
+        <input type="number" id="rightElbow" placeholder="Score" />
+      </div>
+      <div class="form-group">
+        <label for="leftBasket">Left Basket:</label>
+        <input type="number" id="leftBasket" placeholder="Score" />
+      </div>
+      <div class="form-group">
+        <label for="rightBasket">Right Basket:</label>
+        <input type="number" id="rightBasket" placeholder="Score" />
+      </div>
+      <div class="form-group">
+        <label for="totalAttemptsInput">Total Attempts for All Positions:</label>
+        <input type="number" id="totalAttemptsInput" placeholder="Enter total attempts" />
+      </div>
+      <button id="saveScores">Save Scores</button>
+      <button id="resetButton">Reset All Data</button>
     </div>
+
+    <!-- Summary Tab -->
     <div id="summary-tab" class="tab-content">
-        <h2>Summary</h2>
-        <p>Total Attempts: <span id="totalAttempts">0</span></p>
-        <p>Total Scores: <span id="totalScores">0</span></p>
-        <p>Scoring Percentage: <span id="totalPercentage">0%</span></p>
+      <h2>Summary</h2>
+      <p>Total Attempts: <span id="totalAttempts">0</span></p>
+      <p>Total Scores: <span id="totalScores">0</span></p>
+      <p>Scoring Percentage: <span id="totalPercentage">0%</span></p>
     </div>
 
+    <!-- Charts Tab -->
     <div id="charts-tab" class="tab-content">
-        <h2>Charts</h2>
-        <canvas id="scoreChart" width="1400" height="700"></canvas>
-        <canvas id="percentChart" width="1400" height="700"></canvas>
+      <h2>Charts</h2>
+      <canvas id="scoreChart"></canvas>
+      <canvas id="percentChart"></canvas>
     </div>
-    
-    <script>
-        document.querySelectorAll('.tab-button').forEach(button => {
-            button.addEventListener('click', () => {
-                document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-                button.classList.add('active');
-                document.getElementById(button.dataset.tab).classList.add('active');
-            });
-        });
-    
-        let dailyScores = JSON.parse(localStorage.getItem('dailyScores')) || [];
-        let dailyAttempts = JSON.parse(localStorage.getItem('dailyAttempts')) || [];
-        let labels = JSON.parse(localStorage.getItem('labels')) || [];
-        let scoreChart, percentChart;
-    
-        document.getElementById('saveScores').addEventListener('click', () => {
-            const scores = [
-                parseInt(document.getElementById('freetrow').value) || 0,
-                parseInt(document.getElementById('leftElbow').value) || 0,
-                parseInt(document.getElementById('rightElbow').value) || 0,
-                parseInt(document.getElementById('leftBasket').value) || 0,
-                parseInt(document.getElementById('rightBasket').value) || 0
-            ];
-            const totalAttempts = parseInt(document.getElementById('totalAttemptsInput').value) || 0;
-    
-            if (totalAttempts <= 0) {
-                alert('Please enter a valid number of attempts.');
-                return;
-            }
-    
-            const today = new Date().toLocaleDateString();
-            const totalScore = scores.reduce((a, b) => a + b, 0);
-    
-            const index = labels.indexOf(today);
-            if (index === -1) {
-                labels.push(today);
-                dailyScores.push(totalScore);
-                dailyAttempts.push(totalAttempts);
-            } else {
-                dailyScores[index] += totalScore;
-                dailyAttempts[index] += totalAttempts;
-            }
-    
-            localStorage.setItem('dailyScores', JSON.stringify(dailyScores));
-            localStorage.setItem('dailyAttempts', JSON.stringify(dailyAttempts));
-            localStorage.setItem('labels', JSON.stringify(labels));
-    
-            updateSummary();
-            updateCharts();
-            alert('Scores saved!');
-        });
-    
-        document.getElementById('resetButton').addEventListener('click', () => {
-            if (confirm('Are you sure you want to reset all data?')) {
-                localStorage.clear();
-                dailyScores = [];
-                dailyAttempts = [];
-                labels = [];
-                updateSummary();
-                updateCharts();
-            }
-        });
-    
-        function updateSummary() {
-            const totalScores = dailyScores.reduce((a, b) => a + b, 0);
-            const totalAttempts = dailyAttempts.reduce((a, b) => a + b, 0);
-            const totalPercentage = totalAttempts > 0 ? ((totalScores / totalAttempts) * 100).toFixed(2) : 0;
-    
-            document.getElementById('totalAttempts').innerText = totalAttempts;
-            document.getElementById('totalScores').innerText = totalScores;
-            document.getElementById('totalPercentage').innerText = `${totalPercentage}%`;
+
+    <!-- History Tab -->
+    <div id="history-tab" class="tab-content">
+      <h2>History</h2>
+      <table id="historyTable">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Total Score</th>
+            <th>Total Attempts</th>
+            <th>Percentage</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- History rows will be inserted here -->
+        </tbody>
+      </table>
+      <button id="exportData">Export Data as CSV</button>
+    </div>
+  </div>
+
+  <script>
+    // Tab navigation
+    document.querySelectorAll('.tab-button').forEach(button => {
+      button.addEventListener('click', () => {
+        document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        button.classList.add('active');
+        document.getElementById(button.dataset.tab).classList.add('active');
+        if (button.dataset.tab === 'history-tab') {
+          updateHistory();
         }
-    
-        function updateCharts() {
-    const ctxScore = document.getElementById('scoreChart').getContext('2d');
-    const ctxPercent = document.getElementById('percentChart').getContext('2d');
-
-    // Destroy existing charts to avoid duplication
-    if (scoreChart) scoreChart.destroy();
-    if (percentChart) percentChart.destroy();
-
-    // Create the score chart
-    scoreChart = new Chart(ctxScore, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Total Daily Scores',
-                data: dailyScores,
-                borderColor: 'blue',
-                backgroundColor: 'rgba(0, 0, 255, 0.2)',
-                fill: true,
-                tension: 0.3,
-            }],
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    display: true,
-                },
-            },
-        },
+      });
     });
 
-    // Create the percentage chart
-    percentChart = new Chart(ctxPercent, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Scoring Percentage',
-                data: dailyAttempts.map((a, i) => a > 0 ? (dailyScores[i] / a) * 100 : 0),
-                borderColor: 'green',
-                backgroundColor: 'rgba(0, 255, 0, 0.2)',
-                fill: true,
-                tension: 0.3,
-            }],
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    display: true,
-                },
-            },
-        },
-    });
-}
+    // Retrieve or initialize stored data
+    let dailyScores = JSON.parse(localStorage.getItem('dailyScores')) || [];
+    let dailyAttempts = JSON.parse(localStorage.getItem('dailyAttempts')) || [];
+    let labels = JSON.parse(localStorage.getItem('labels')) || [];
+    let scoreChart, percentChart;
 
-        
-    
+    // Save scores functionality
+    document.getElementById('saveScores').addEventListener('click', () => {
+      const scores = [
+        parseInt(document.getElementById('freetrow').value) || 0,
+        parseInt(document.getElementById('leftElbow').value) || 0,
+        parseInt(document.getElementById('rightElbow').value) || 0,
+        parseInt(document.getElementById('leftBasket').value) || 0,
+        parseInt(document.getElementById('rightBasket').value) || 0
+      ];
+      const totalAttempts = parseInt(document.getElementById('totalAttemptsInput').value) || 0;
+
+      if (totalAttempts <= 0) {
+        alert('Please enter a valid number of attempts.');
+        return;
+      }
+
+      const today = new Date().toLocaleDateString();
+      const totalScore = scores.reduce((a, b) => a + b, 0);
+
+      const index = labels.indexOf(today);
+      if (index === -1) {
+        labels.push(today);
+        dailyScores.push(totalScore);
+        dailyAttempts.push(totalAttempts);
+      } else {
+        dailyScores[index] += totalScore;
+        dailyAttempts[index] += totalAttempts;
+      }
+
+      localStorage.setItem('dailyScores', JSON.stringify(dailyScores));
+      localStorage.setItem('dailyAttempts', JSON.stringify(dailyAttempts));
+      localStorage.setItem('labels', JSON.stringify(labels));
+
+      updateSummary();
+      updateCharts();
+      alert('Scores saved!');
+    });
+
+    // Reset all data
+    document.getElementById('resetButton').addEventListener('click', () => {
+      if (confirm('Are you sure you want to reset all data?')) {
+        localStorage.clear();
+        dailyScores = [];
+        dailyAttempts = [];
+        labels = [];
         updateSummary();
         updateCharts();
-    </script>
-    
+        updateHistory();
+      }
+    });
 
+    // Update summary display
+    function updateSummary() {
+      const totalScores = dailyScores.reduce((a, b) => a + b, 0);
+      const totalAttempts = dailyAttempts.reduce((a, b) => a + b, 0);
+      const totalPercentage = totalAttempts > 0 ? ((totalScores / totalAttempts) * 100).toFixed(2) : 0;
+
+      document.getElementById('totalAttempts').innerText = totalAttempts;
+      document.getElementById('totalScores').innerText = totalScores;
+      document.getElementById('totalPercentage').innerText = `${totalPercentage}%`;
+    }
+
+    // Update charts using Chart.js
+    function updateCharts() {
+      const ctxScore = document.getElementById('scoreChart').getContext('2d');
+      const ctxPercent = document.getElementById('percentChart').getContext('2d');
+
+      // Destroy existing charts if they exist
+      if (scoreChart) scoreChart.destroy();
+      if (percentChart) percentChart.destroy();
+
+      scoreChart = new Chart(ctxScore, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Total Daily Scores',
+            data: dailyScores,
+            borderColor: 'blue',
+            backgroundColor: 'rgba(0, 0, 255, 0.2)',
+            fill: true,
+            tension: 0.3,
+          }],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: true },
+          },
+        },
+      });
+
+      percentChart = new Chart(ctxPercent, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Scoring Percentage',
+            data: dailyAttempts.map((a, i) => a > 0 ? (dailyScores[i] / a) * 100 : 0),
+            borderColor: 'green',
+            backgroundColor: 'rgba(0, 255, 0, 0.2)',
+            fill: true,
+            tension: 0.3,
+          }],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: true },
+          },
+        },
+      });
+    }
+
+    // Update history table with stored data
+    function updateHistory() {
+      const tbody = document.querySelector('#historyTable tbody');
+      tbody.innerHTML = '';
+      labels.forEach((date, index) => {
+        const score = dailyScores[index];
+        const attempts = dailyAttempts[index];
+        const percentage = attempts > 0 ? ((score / attempts) * 100).toFixed(2) : '0.00';
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${date}</td>
+          <td>${score}</td>
+          <td>${attempts}</td>
+          <td>${percentage}%</td>
+          <td><button onclick="deleteEntry(${index})">Delete</button></td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    // Delete a specific history entry
+    function deleteEntry(index) {
+      if (confirm('Are you sure you want to delete this entry?')) {
+        labels.splice(index, 1);
+        dailyScores.splice(index, 1);
+        dailyAttempts.splice(index, 1);
+
+        localStorage.setItem('dailyScores', JSON.stringify(dailyScores));
+        localStorage.setItem('dailyAttempts', JSON.stringify(dailyAttempts));
+        localStorage.setItem('labels', JSON.stringify(labels));
+
+        updateSummary();
+        updateCharts();
+        updateHistory();
+      }
+    }
+
+    // Export data as CSV
+    document.getElementById('exportData').addEventListener('click', () => {
+      let csvContent = "data:text/csv;charset=utf-8,Date,Total Score,Total Attempts,Percentage\n";
+      labels.forEach((date, index) => {
+        const score = dailyScores[index];
+        const attempts = dailyAttempts[index];
+        const percentage = attempts > 0 ? ((score / attempts) * 100).toFixed(2) : '0.00';
+        csvContent += `${date},${score},${attempts},${percentage}%\n`;
+      });
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "basketball_performance.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+
+    // Initial updates
+    updateSummary();
+    updateCharts();
+  </script>
 </body>
 </html>
